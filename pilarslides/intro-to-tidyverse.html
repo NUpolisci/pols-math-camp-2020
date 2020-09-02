@@ -4,6 +4,7 @@
     <title>Intro to Tidyverse</title>
     <meta charset="utf-8" />
     <meta name="author" content="Amanda and Pilar" />
+    <meta name="date" content="2020-09-03" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
@@ -15,7 +16,7 @@ class: center, middle, inverse, title-slide
 
 # Intro to Tidyverse
 ### Amanda and Pilar
-### 22 August, 2020
+### 09/03/2020
 
 ---
 
@@ -107,12 +108,12 @@ When you install (and load) tidyverse, you're installing (and loading) all of th
 chicago &lt;- read.csv("data/Census Data_selected_2008-2012.csv")
 ```
 
-.large[Check out the 'glimpse' command. How does it compare to the Base R commands we learned last time? (dim(), head(), and names() ?]
+.large[Check out the `glimpse` command. How does it compare to the Base R commands we learned last time? (dim(), head(), and names() ?]
 
 ---
 # Dplyr in Practice: renaming
 
-.med[Notice the variable names are quite messy. Let's fix this with 'rename'.]
+.med[Notice the variable names are quite messy. Let's fix this with `rename`.]
 
 
 ```r
@@ -161,7 +162,7 @@ names(chicago)
 ---
 # Dplyr in Practice: summarizing
 
-.med[`summarize` reduces observations to a single value based on functions]
+.med[`summarise` reduces observations to a single value based on functions]
 
 
 ```r
@@ -186,11 +187,39 @@ summarise(chicago, mean = mean(poverty), sd = sd(poverty), max = max(poverty))
 ## 1 21.73974 11.45723 56.5
 ```
 
+---
+# Dplyr in Practice: mutating
+
+.med[The `mutate` function allows us to create new variables based on some transformation of an existing variable.]
+
+--
+
+.med[Let's say we want to convert the poverty numbers into a proportion.]
+
+
+```r
+chicago &lt;- mutate(chicago, pov_prop = poverty/100)
+
+summary(chicago$pov_prop)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.0330  0.1335  0.1905  0.2174  0.2915  0.5650
+```
+--
+.med[Notice how we first assign a new variable name and then tell R how we want that variable to be created.]
 
 ---
 # Dplyr in Practice: filtering
 
-Say we want to create a filter to get neighborhoods that have poverty rates above 20%. 
+.med[Say we want to view values or perform operations only on a subset of cases. We can use `filter` to create conditions different conditions.]
+
+--
+
+For instance, let's filter to get neighborhoods that have poverty rates above 20%. 
+
+--
 
 If we run this command, it will simply show us the dataset with the filter.
 
@@ -216,18 +245,20 @@ filter(chicago, poverty &gt; 20 &amp; diploma &gt; 40 &amp; neighborhood != "Her
 ---
 # PRACTICE 
 
-.med[ 1) What are the dimensions of this new dataset? 
+.med[ 1) Create a new dataset that only has North Side neighborhoods.  
 
-2) Summarize 'poverty' on this new dataset]
+2) Create a new dataset that only has North Side neighborhoods and were per capita income is above $40,000.
+
+3) Which neighborhoods are left?]
 
 ---
 # Dplyr in Practice: selecting
 
-.med[Sometimes you will be working with large dataset that have hundreds of variables. But what if you want to work with only some of these variables?]
+.med[Sometimes you will be working with large datasets that have hundreds of variables. But what if you want to work with only some of these variables?]
 
 --
 
-.med[We can create a dataset that has only the variables we want:]
+.med[We can create a dataset that has only the variables we want by using the `select` function:]
 
 
 ```r
