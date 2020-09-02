@@ -21,11 +21,16 @@ library(tidyverse)
  
 # Intro to Tidyverse 
 
-A combination of packages that are useful for: importing, cleaning and transforming, processing and analyzing, visualizing. 
+.med[A combination of packages that are useful for: importing, cleaning and transforming, processing and analyzing, visualizing. 
 
-Most common packages: dplyr, ggplot, haven 
+Most common packages: dplyr, ggplot, haven]
 
-When you install (and load) tidyverse, you're installing (and loading) all of these packages. You can, instead, load the individual packages you'll use. 
+--
+
+.med[When you install (and load) tidyverse, you're installing (and loading) all of these packages. You can, instead, load the individual packages you'll use.]
+
+--
+.med[Install and load tidyverse on your computer.]
 
 ---
 # Tidy Data
@@ -110,6 +115,8 @@ knitr::include_graphics("figures/dplyr.png")
 ```{r}
 chicago <- read.csv("data/Census Data_selected_2008-2012.csv")
 ```
+
+--
 
 .large[Check out the `glimpse` command. How does it compare to the Base R commands we learned last time? (dim(), head(), and names() ?]
 
@@ -324,4 +331,9 @@ chicago %>% select(poverty, ZONE) %>% filter(poverty > 30) %>%
 
 In this case, we are first selecting only two variables from the dataset, then filtering for neighborhoods with poverty rates over 30%, then grouping by zone, then obtaining the mean poverty rate for each zone. 
 
+---
+# PRACTICE `r emo::ji("geek")`
 
+Using the World Value Survey dataset from yesterday: 
+
+1) 
