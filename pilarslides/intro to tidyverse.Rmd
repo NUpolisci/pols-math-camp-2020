@@ -186,6 +186,11 @@ summary(chicago$pov_prop)
 .med[Notice how we first assign a new variable name and then tell R how we want that variable to be created.]
 
 ---
+# PRACTICE 
+
+.med[Imagine that you are creating a simple additive index of 3 indicators: per capita income, percent of housing crowded, and percent without diploma. Create a new variable with the sum of these values and divide it by 3.]
+
+---
 # Dplyr in Practice: filtering
 
 .med[Say we want to view values or perform operations only on a subset of cases. We can use `filter` to create conditions different conditions.]
