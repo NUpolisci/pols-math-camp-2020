@@ -21,12 +21,13 @@ library(tidyverse)
  
 # Intro to Tidyverse 
 
-.med[A combination of packages that are useful for: importing, cleaning and transforming, processing and analyzing, visualizing. 
+.med[A combination of packages that are useful for: importing, cleaning and transforming, processing and analyzing, visualizing.]
 
 .center[
 ```{r  out.height="40%", out.width="50%", echo=FALSE}
 knitr::include_graphics("figures/tidyverse-packages.png") 
 ```
+]
 ---
 # Intro to tidyverse 
 
@@ -36,6 +37,15 @@ knitr::include_graphics("figures/tidyverse-packages.png")
 --
 
 .med[Install and load tidyverse on your computer.]
+
+--
+
+Notice the message you get:
+.center[
+```{r  out.height="70%", out.width="70%", echo=FALSE}
+knitr::include_graphics("figures/tidyverse_message.png") 
+```
+]
 
 ---
 # Tidy Data
@@ -126,12 +136,12 @@ chicago <- read.csv("data/Census Data_selected_2008-2012.csv")
 .large[Check out the `glimpse` command. How does it compare to the Base R commands we learned last time? (dim(), head(), and names() ?]
 
 ---
-# Dplyr in Practice: renaming
+# Dplyr: renaming
 
 .med[Notice the variable names are quite messy. Let's fix this with `rename`.]
 
 ```{r echo=T, results="hide"}
-rename(chicago, neighborhood=COMMUNITY.AREA.NAME)
+rename(chicago, neighborhood = COMMUNITY.AREA.NAME)
 ```
 --
 
@@ -157,31 +167,33 @@ names(chicago)
   
 .med[2) PERCENT.AGED.25..WITHOUT.HIGH.SCHOOL.DIPLOMA into "no_diploma".]
 
---
-```{r echo=FALSE}
-chicago <-
-  chicago %>% rename(diploma = PERCENT.AGED.25..WITHOUT.HIGH.SCHOOL.DIPLOMA,
+---
+exclude: true
+# ANSWERS
+
+```{r echo=TRUE}
+chicago <-  rename(chicago, diploma = PERCENT.AGED.25..WITHOUT.HIGH.SCHOOL.DIPLOMA,
                      poverty = PERCENT.HOUSEHOLDS.BELOW.POVERTY,
                      neighborhood = COMMUNITY.AREA.NAME) 
 ```
 ---
-# Dplyr in Practice: summarizing
+# Dplyr: summariz(s)ing
 
 .med[`summarise` reduces observations to a single value based on functions]
 
 ```{r}
-summarise(chicago, mean = mean(poverty))
+summarise(chicago, mean_pov = mean(poverty))
 ```
 --
 
 Let's add other descriptive statistics:
 
 ```{r}
-summarise(chicago, mean = mean(poverty), sd = sd(poverty), max = max(poverty))
+summarise(chicago, mean_pov = mean(poverty), sd_pov = sd(poverty), max_pov = max(poverty))
 ```
 
 ---
-# Dplyr in Practice: mutating
+# Dplyr: mutating
 
 .med[The `mutate` function allows us to create new variables based on some transformation of an existing variable.]
 
@@ -200,10 +212,21 @@ summary(chicago$pov_prop)
 ---
 # PRACTICE 
 
-.med[Imagine that you are creating a simple additive index of 3 indicators: per capita income, percent of housing crowded, and percent without diploma. Create a new variable with the sum of these values and divide it by 3.]
+.med[Imagine that you are creating a simple additive index of 3 indicators: per capita income, percent of housing crowded, and percent without diploma.]
+
+.med[Create a new variable with the sum of these values and divide it by 3.]
 
 ---
-# Dplyr in Practice: filtering
+exclude: true
+
+# ANSWERS
+
+```{r}
+chicago <- mutate(chicago, index = (PER.CAPITA.INCOME + PERCENT.OF.HOUSING.CROWDED + diploma)/3)
+```
+
+---
+# Dplyr: filtering
 
 .med[Say we want to view values or perform operations only on a subset of cases. We can use `filter` to create conditions different conditions.]
 
@@ -236,12 +259,32 @@ filter(chicago, poverty > 20 & diploma > 40 & neighborhood != "Hermosa")
 
 .med[ 1) Create a new dataset that only has North Side neighborhoods.  
 
-2) Create a new dataset that only has North Side neighborhoods and were per capita income is above $40,000.
+2) Create a new dataset that only has North Side neighborhoods and where per capita income is above $40,000.
 
 3) Which neighborhoods are left?]
 
 ---
-# Dplyr in Practice: selecting
+exclude: true
+
+# ANSWERS
+
+1) 
+```{r}
+chicago_new <- filter(chicago, ZONE == "North")
+```
+
+2) 
+```{r}
+chicago_new <- filter(chicago, ZONE == "North" & PER.CAPITA.INCOME >40000)
+```
+
+3) 
+```{r}
+chicago_new$neighborhood
+```
+
+---
+# Dplyr: selecting
 
 .med[Sometimes you will be working with large datasets that have hundreds of variables. But what if you want to work with only some of these variables?]
 
@@ -258,7 +301,7 @@ small_chicago <- select(chicago, poverty, diploma, neighborhood)
 glimpse(small_chicago)
 ```
 ---
-# Dplyr in Practice: selecting 
+# Dplyr: selecting 
 
 .med[
 - select by name: 
@@ -274,7 +317,7 @@ glimpse(small_chicago)
 ]
 
 ---
-# Dplyr in Practice: grouping 
+# Dplyr: grouping 
 
 Many times you'll want to analyze data across groups (regions, gender, age group, political party, etc.). We can use the group_by function for this. 
 
@@ -285,17 +328,17 @@ grouping <- group_by(chicago, ZONE)
 And now instead of summarizing over "chicago", we summarize over the new object "grouping". 
 
 ```{r}
-summarise(grouping, mean = mean(poverty))
+summarise(grouping, mean_pov = mean(poverty))
 ```
 
 ---
-# Dplyr in Practice: Pipes %>% 
+# Dplyr: Pipes %>% 
 
 .med[There's a wonderful tool in dplyr called a **pipe**, which will allow us to do things much more efficiently.]
 
 --
 
-.center.med[It's symbols is %>% *(tip: keyboard shortcut Ctrl+Shift+M)*]
+.center.med[It's symbols is ` %>%` *(tip: keyboard shortcut Ctrl+Shift+M)*]
 
 --
 
@@ -307,21 +350,21 @@ summarise(grouping, mean = mean(poverty))
 
 
 ---
-# Dplyr in Practice: Pipes %>% 
+# Dplyr: Pipes %>% 
 
 Let's take the example above (mean of poverty by area) and do it in one step. The first thing we do is tell it which dataset we want to run the commands in, and then we simply write the commands, without having to specify the dataset. 
 
 --
 
 ```{r}
-chicago %>% group_by(ZONE) %>% summarise(mean = mean(poverty))
+chicago %>% group_by(ZONE) %>% summarise(mean_pov = mean(poverty))
 ```
 --
 
 This translates to: in the dataset 'chicago', group by 'zone' and give us the mean of poverty for each zone. 
 
 ---
-# Dplyr in Practice: Pipes
+# Dplyr: Pipes %>% 
 
 You can add as many commands as you want (but nothing in excess is good!). 
 
@@ -329,7 +372,7 @@ You can add as many commands as you want (but nothing in excess is good!).
 
 ```{r}
 chicago %>% select(poverty, ZONE) %>% filter(poverty > 30) %>% 
-  group_by(ZONE) %>% summarise(mean = mean(poverty))
+  group_by(ZONE) %>% summarise(mean_pov = mean(poverty))
 ```
 
 --
@@ -337,8 +380,98 @@ chicago %>% select(poverty, ZONE) %>% filter(poverty > 30) %>%
 In this case, we are first selecting only two variables from the dataset, then filtering for neighborhoods with poverty rates over 30%, then grouping by zone, then obtaining the mean poverty rate for each zone. 
 
 ---
-# PRACTICE `r emo::ji("geek")`
+# PRACTICE
 
-Using the World Value Survey dataset from yesterday: 
+.med[1) Combine these commands into a single one using `%>%`]
+
+```{r}
+chicago_subset <- select(chicago, neighborhood, ZONE, poverty, diploma, HARDSHIP.INDEX)
+
+chicago_subset <- filter(chicago_subset, poverty < 50)
+
+grouping <- group_by(chicago_subset, ZONE)
+
+summarise(grouping, index_avg = mean(HARDSHIP.INDEX), mean(poverty), mean(diploma))
+
+```
+---
+# PRACTICE
+
+.med[2) Notice how there is one Zone that is unidentified (i.e. it has no name).]
+
+.med[Try filtering out the cases that aren't associated to any zone. In other words, filter out that missing Zone cateogry.]
+
+---
+exclude: true
+
+# ANSWER
+
+1)
+```{r}
+chicago %>% select(neighborhood, ZONE, poverty, diploma, HARDSHIP.INDEX) %>% filter(poverty < 50) %>%  group_by(ZONE) %>%  summarise (index_avg = mean(HARDSHIP.INDEX), mean(poverty), mean(diploma))
+
+```
+
+2)
+```{r}
+chicago <- chicago %>% filter(ZONE != "")
+```
+
+---
+# MORE PRACTICE `r emo::ji("geek")`
+
+Using the World Value Survey dataset from yesterday, let's explore people's liberal-conservative values across the world. 
+
+1) Create a subset with the following variables: Q106-Q109, Q240, Q184-Q186. (Refer to codebook to see what these variables are.)
+
+2) Keep only observations from the following countries: US, Colombia, Kazahkstan, Japan, Zimbabwe
+
+3) Rename the following variables: 
+  - Q106 to "income_eq"
+  - Q240 to "left_right" 
+  - Q184 to "just_abort"
+
+4) Find the mean of "left_right" for the total sample. Then find the mean of "left_right" in each country. 
+
+5) Now compare this with the mean of "income_eq" and "just_abort". (You can explore the other variables in the dataset as well.) What does this tell us about liberal-conservative values? 
+
+
+---
+exclude: true
+
+# MORE PRACTICE ANSWERS 
+
+```{r}
+library(haven)
+library(tidyverse)
+wvs <- read_dta("C:/Users/pilim/Dropbox/Northwestern/TA/Math Camp/Session 2/WVS_Cross-National_Wave_7_stata_v1_4.dta")
+```
 
 1) 
+```{r}
+wvs_sml<- wvs %>% select(B_COUNTRY_ALPHA, Q106:Q109, Q240, Q184:Q186) 
+```
+
+2) 
+```{r}
+wvs_sml <- wvs_sml %>% filter(B_COUNTRY_ALPHA == "COL" | B_COUNTRY_ALPHA == "KAZ" | B_COUNTRY_ALPHA == "USA" | B_COUNTRY_ALPHA == "JPN" | B_COUNTRY_ALPHA == "ZWE" )
+```
+
+3) 
+```{r}
+wvs_sml <- wvs_sml %>% rename(income_eq = Q106,
+                              left_right = Q240, 
+                              just_abort = Q184)
+```
+
+4) 
+```{r}
+wvs_sml %>% summarise(mean_scale = mean(left_right, na.rm = TRUE))
+wvs_sml %>% group_by(B_COUNTRY_ALPHA) %>% summarise(mean_scale = mean(left_right, na.rm = TRUE))
+
+```
+5) 
+```{r}
+wvs_sml %>% group_by(B_COUNTRY_ALPHA) %>% summarise(mean_scale = mean(left_right, na.rm=TRUE), mean_income = mean(income_eq, na.rm = TRUE), mean_abort = mean(just_abort, na.rm = TRUE))
+```
+
