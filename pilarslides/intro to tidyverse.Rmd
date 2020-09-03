@@ -23,13 +23,18 @@ library(tidyverse)
 
 .med[A combination of packages that are useful for: importing, cleaning and transforming, processing and analyzing, visualizing. 
 
-Most common packages: dplyr, ggplot, haven]
+.center[
+```{r  out.height="40%", out.width="50%", echo=FALSE}
+knitr::include_graphics("figures/tidyverse-packages.png") 
+```
+---
+# Intro to tidyverse 
 
---
 
 .med[When you install (and load) tidyverse, you're installing (and loading) all of these packages. You can, instead, load the individual packages you'll use.]
 
 --
+
 .med[Install and load tidyverse on your computer.]
 
 ---
