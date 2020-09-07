@@ -1,7 +1,7 @@
 ---
 title: "ggplot"
 author: "Amanda and Pilar"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "09/10/2020"
 output: 
   xaringan::moon_reader:
     seal: true 
@@ -87,10 +87,13 @@ glimpse(gapminder)
 ggplot works by combining several functions using the `+` operator. This creates _layers_ in an additive fashion. Each function does something specific: provide a dataset, create a geometric object, add labels, add scales, change the coordinate system or layout, change the color palette, etc. 
 
 
-ggplot(name of dataset), aes (x= name variable x, y= name variable y, ...) +
-geom_something() 
+ggplot(name of dataset), aes (x= name variable x, y= name variable y, ...) + geom_something() 
 
---
+---
+# The Basic Structure
+
+ggplot(name of dataset), aes (x= name variable x, y= name variable y, ...) + geom_something() 
+
 
 - Name of dataset: just type the name of the dataset that contains the variables you are interested in graphing.
 
@@ -100,7 +103,7 @@ geom_something()
 
 --
 
-- geom_something: *how* you want to plot it. Geometric objects are the actual marks we put on a plot. You need at leas one but can have as many as you want! Common examples: 
+- geom_something: *how* you want to plot it. Geometric objects are the actual marks we put on a plot. You need at least one but can have as many as you want! Common examples: 
   - geom_point: points for scatter plots, dot plots, etc.
   - geom_line: lines for time series, trend lines, etc.
   - geom_boxplot: boxplots
