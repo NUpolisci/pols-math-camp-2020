@@ -200,6 +200,11 @@ chicago <- read.csv("C:/Users/pilim/Dropbox/Northwestern/TA/Math Camp/Session 2/
 .large[2) Upload the csv version to R.]
 
 ---
+
+```{r}
+chicago <- read.csv("data/Census Data_selected_2008-2012.csv")
+```
+---
 # Reading in Data 
 
 .med[Besides the Base R commands for importing data, many packages offer alternatives. See "readr" and "haven", both part of the Tidyverse collection.]
@@ -212,12 +217,18 @@ chicago <- read.csv("C:/Users/pilim/Dropbox/Northwestern/TA/Math Camp/Session 2/
 
 .med[**PRACTICE**: Install and load the package "haven". Use it to read in the .dta version of the Chicago dataset.]
 
---
+.med[**Bonus**: upload the chicago csv dataset using `readr`]
+
+---
 
 ```{r, eval=TRUE}
 library(haven)
 
 chicago_stat <- read_dta("data/Census Data_selected_2008-2012.dta")
+
+library(readr)
+
+chicago_dat <- read_csv("data/Census Data_selected_2008-2012.csv")
 
 ```
 
@@ -288,27 +299,69 @@ summary(chicago)
 
 3) What can you say about Rogers Park's level of poverty in comparison to the rest of the city? 
 
-4) Which neighborhood has the highest poverty rate? What zone is it located in? 
+4) Which neighborhood has the highest poverty rate? What zone is it located in? **Hint**: Use `?max`
 
 5) Create a new variable that indicates whether the poverty rate is above or below the average poverty rate of the city.  
+
+**Hint**: Look at this code and try for yourself
+```{r}
+# This code creates the new variable 'lifeExp_over70'. Try to understand what it does.
+chicago$poverty_15 <- NA  # Initialize a variable containing all "NA" values
+chicago$poverty_15[chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY < 15] <- "Yes"
+chicago$poverty_15[chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY >= 15] <- "No"
+```
 
 6) Use the command 'plot' to make a scatter plot between poverty rates and percent without HS diploma. (We'll learn how to make prettier plots in the last session)
 
 ---
+Question 1: 
+```{r}
+head(chicago$COMMUNITY.AREA.NAME)
+```
 
-```{r echo=FALSE}
-chicago$pov <- NA  
-chicago$pov[chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY>=22] <- "Yes"
-chicago$pov[chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY<22] <- "No"
+Question 2:
+```{r}
+summary(chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY)
+```
+
+Question 3:
+```{r}
+chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY[chicago$COMMUNITY.AREA.NAME == "Rogers Park"]
 ```
 
 ---
-# More skills ! `r emo::ji("smiley")`
+Question 4:
+```{r}
+max(chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY)
+chicago$COMMUNITY.AREA.NAME[chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY == 56.5]
+
+```
+
+Question 5:
+
+```{r echo=FALSE}
+chicago$pov <- NA  
+chicago$pov[chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY >= mean(chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY)] <- "Yes"
+chicago$pov[chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY< mean(chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY)] <- "No"
+table(chicago$pov)
+```
+
+
+---
+Question 6: 
+
+```{r}
+
+plot(chicago$PERCENT.HOUSEHOLDS.BELOW.POVERTY, chicago$PERCENT.AGED.25..WITHOUT.HIGH.SCHOOL.DIPLOMA)
+```
+
+---
+# More skills !
 
 .med[Find, download and upload the data for the latest wave of the World Value Survey.]
 
 ```{r}
-wvs <- read_dta("data/WVS_Cross-National_Wave_7_stata_v1_4.dta")
+wvs <- read_dta("../data/WVS_Cross-National_Wave_7_stata_v1_4.dta")
 ```
 --
 
