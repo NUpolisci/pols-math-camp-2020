@@ -4,6 +4,7 @@
     <title>ggplot</title>
     <meta charset="utf-8" />
     <meta name="author" content="Amanda and Pilar" />
+    <meta name="date" content="2020-09-10" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
@@ -15,7 +16,7 @@ class: center, middle, inverse, title-slide
 
 # ggplot
 ### Amanda and Pilar
-### 22 August, 2020
+### 09/10/2020
 
 ---
 
@@ -93,10 +94,13 @@ glimpse(gapminder)
 ggplot works by combining several functions using the `+` operator. This creates _layers_ in an additive fashion. Each function does something specific: provide a dataset, create a geometric object, add labels, add scales, change the coordinate system or layout, change the color palette, etc. 
 
 
-ggplot(name of dataset), aes (x= name variable x, y= name variable y, ...) +
-geom_something() 
+ggplot(name of dataset), aes (x= name variable x, y= name variable y, ...) + geom_something() 
 
---
+---
+# The Basic Structure
+
+ggplot(name of dataset), aes (x= name variable x, y= name variable y, ...) + geom_something() 
+
 
 - Name of dataset: just type the name of the dataset that contains the variables you are interested in graphing.
 
@@ -106,7 +110,7 @@ geom_something()
 
 --
 
-- geom_something: *how* you want to plot it. Geometric objects are the actual marks we put on a plot. You need at leas one but can have as many as you want! Common examples: 
+- geom_something: *how* you want to plot it. Geometric objects are the actual marks we put on a plot. You need at least one but can have as many as you want! Common examples: 
   - geom_point: points for scatter plots, dot plots, etc.
   - geom_line: lines for time series, trend lines, etc.
   - geom_boxplot: boxplots
@@ -540,9 +544,10 @@ ggplot(data=gapminder, aes(x=lifeExp)) +
 ---
 # ggplot: Plotting a continuous variable
 
-.med[How about one density plot per continent?]
+How about one density plot per continent?
 
 --
+.pull-left[
 
 ```r
 ggplot(data=gapminder, aes(x=lifeExp, fill=continent)) +
@@ -550,6 +555,7 @@ ggplot(data=gapminder, aes(x=lifeExp, fill=continent)) +
 ```
 
 ![](ggplot_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+]
 --
 
 .pull-right.med[**PRACTICE**: Change the alpha value and see what that does.]
@@ -559,16 +565,32 @@ ggplot(data=gapminder, aes(x=lifeExp, fill=continent)) +
 
 Boxplots are useful when we have a categorical X and a continuous Y (or viceversa)
 
+.pull-left[
 
 ```r
  ggplot(data=gapminder, aes(x=continent, y=lifeExp)) +
-  geom_boxplot(outlier.size=2)
+  geom_boxplot()
 ```
 
 ![](ggplot_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+]
+
 --
 
-.pull-right.med[**PRACTICE**: Give it some color (hint: see the colorful bar graph above)]
+.pull-right.med[**PRACTICE**: Give it some color (hint: see the colorful bar graph above). 
+
+Check out the 'violin' plot in  https://www.r-graph-gallery.com/ and try to make one with this same data.]
+
+---
+exclude: true
+
+
+```r
+ ggplot(data=gapminder, aes(x=continent, y=lifeExp)) +
+  geom_violin()
+```
+
+![](ggplot_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
 
 ---
 # Plotting two continuous 
@@ -913,7 +935,7 @@ gapminder %&gt;%
 ]
 
 .pull-right[
-![](ggplot_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+![](ggplot_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -926,7 +948,7 @@ gapminder %&gt;%
 
 2) Add some color 
 
-3) Change the axis so that it's not in scientific notation
+3) Change the axis so that it's not in scientific notation (google:  options(scipen = ))
 
 4) Add a theme 
 ]
@@ -953,7 +975,7 @@ plot1 &lt;- gapminder %&gt;%
 plot1 
 ```
 
-![](ggplot_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+![](ggplot_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
 ]
 ---
 # Saving graphs 
@@ -982,6 +1004,226 @@ plot1 &lt;- gapminder %&gt;%
 --
 
 .med[**PRACTICE**: Find this plot in your files.]
+
+
+---
+# MORE PRACTICE 🤓
+
+Using the World Value Survey: 
+
+1) Create a subset with the following variables: B_COUNTRY_ALPHA, A_YEAR, Q106-Q109, Q240, Q184-Q186. (Refer to codebook to see what these variables are.)
+
+2) Keep only observations from the following countries: US, Colombia, Tajikistan, Japan, Zimbabwe
+
+3) Check the dimensions of this new dataset
+
+4) Rename the following variables: 
+  - Q106 to "income_eq"
+  - Q240 to "left_right" 
+  - Q184 to "just_abort"
+
+5) Make a table of "left_right" for the whole sample, then for each country (hint: make a crosstab of B_COUNTRY_ALPHA and left_right). BONUS: convert this crosstab into percentage per column.
+
+6) Find the mean of "left_right" for the total sample. Then find the mean of "left_right" in each country. 
+
+7) Now calculate the mean of "income_eq" and "just_abort" for each country. What does this tell us about liberal-conservative values? 
+
+---
+exclude: true
+
+# MORE PRACTICE ANSWERS 
+
+
+```r
+library(haven)
+library(tidyverse)
+wvs &lt;- read_dta("C:/Users/pilim/Dropbox/Northwestern/TA/Math Camp/Session 2/WVS_Cross-National_Wave_7_stata_v1_4.dta")
+```
+
+1) 
+
+```r
+wvs_sml&lt;- wvs %&gt;% select(B_COUNTRY_ALPHA, A_YEAR, Q106:Q109, Q240, Q184:Q186) 
+```
+
+2) 
+
+```r
+wvs_sml &lt;- wvs_sml %&gt;% filter(B_COUNTRY_ALPHA == "COL" | B_COUNTRY_ALPHA == "TJK" | B_COUNTRY_ALPHA == "USA" | B_COUNTRY_ALPHA == "JPN" | B_COUNTRY_ALPHA == "ZWE" )
+```
+
+3) 
+
+```r
+dim(wvs_sml)
+```
+
+```
+## [1] 7884   10
+```
+
+4) 
+
+```r
+wvs_sml &lt;- wvs_sml %&gt;% rename(income_eq = Q106,
+                              left_right = Q240, 
+                              just_abort = Q184)
+```
+
+5) 
+
+```r
+table(wvs_sml$left_right)
+```
+
+```
+## 
+##    1    2    3    4    5    6    7    8    9   10 
+##  719  233  516  438 1857  725  605  686  357 1218
+```
+
+```r
+table(wvs_sml$left_right, wvs_sml$B_COUNTRY_ALPHA)
+```
+
+```
+##     
+##      COL JPN TJK USA ZWE
+##   1  189  18  17 248 247
+##   2   20  22  12 135  44
+##   3   49  85  34 307  41
+##   4   42 106  40 206  44
+##   5  508 275 159 611 304
+##   6  134 137 132 261  61
+##   7   75 126 112 240  52
+##   8   88 117 204 239  38
+##   9   32  48 148 102  27
+##   10 383  42 342 182 269
+```
+
+6) 
+
+```r
+wvs_sml %&gt;% summarise(mean_scale = mean(left_right, na.rm = TRUE))
+```
+
+```
+## # A tibble: 1 x 1
+##   mean_scale
+##        &lt;dbl&gt;
+## 1       5.88
+```
+
+```r
+wvs_sml %&gt;% group_by(B_COUNTRY_ALPHA) %&gt;% summarise(mean_scale = mean(left_right, na.rm = TRUE))
+```
+
+```
+## # A tibble: 5 x 2
+##   B_COUNTRY_ALPHA mean_scale
+##   &lt;chr&gt;                &lt;dbl&gt;
+## 1 COL                   6.08
+## 2 JPN                   5.75
+## 3 TJK                   7.55
+## 4 USA                   5.22
+## 5 ZWE                   5.43
+```
+
+7) 
+
+```r
+wvs_sml %&gt;% group_by(B_COUNTRY_ALPHA) %&gt;% summarise(mean_scale = mean(left_right, na.rm=TRUE), mean_income = mean(income_eq, na.rm = TRUE), mean_abort = mean(just_abort, na.rm = TRUE))
+```
+
+```
+## # A tibble: 5 x 4
+##   B_COUNTRY_ALPHA mean_scale mean_income mean_abort
+##   &lt;chr&gt;                &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+## 1 COL                   6.08        6.30       2.35
+## 2 JPN                   5.75        5.36       4.87
+## 3 TJK                   7.55        8.06       2.33
+## 4 USA                   5.22        4.93       5.07
+## 5 ZWE                   5.43        6.45       1.77
+```
+
+---
+# MORE PRACTICE 🤓
+
+*With the subset of the wvs we've created:*
+
+1) Plot a bar graph with the number of observations per country 
+
+2) Plot a histogram with the distribution of left_right for each country (all in the same plot)
+
+3) Make a violin plot of the distribution of "income_eq" for each country (all in same plot). 
+
+4) Make a box plot of the distribution of "just_abort" for each country (all in same plot).  
+
+*With the complete dataset:*
+
+6) Make a scatter plot of q106(income_eq) and q184(just_abort). Hint: calculate the mean for each country first. 
+
+7) Google how to add the country labels to the scatter plot. 
+
+---
+exclude: true
+# Practice graphs ANSWERS
+
+1)
+
+```r
+wvs_sml %&gt;% ggplot(aes(x = B_COUNTRY_ALPHA)) + 
+  geom_bar()
+```
+
+![](ggplot_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+
+2) 
+
+```r
+wvs_sml %&gt;% ggplot(aes(x= left_right, fill=B_COUNTRY_ALPHA)) +
+    geom_density(alpha=0.2)
+```
+
+![](ggplot_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+
+3)
+
+```r
+wvs_sml %&gt;% ggplot(aes(x = B_COUNTRY_ALPHA, y = income_eq)) + 
+  geom_violin()
+```
+
+![](ggplot_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+4)
+
+```r
+wvs_sml %&gt;% ggplot(aes(x = B_COUNTRY_ALPHA, y = just_abort)) + 
+  geom_boxplot()
+```
+
+![](ggplot_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+
+5)
+
+```r
+wvs %&gt;% group_by(B_COUNTRY_ALPHA) %&gt;% summarise(mean_income = mean(Q106, na.rm=TRUE), mean_abort = mean(Q184, na.rm = TRUE)) %&gt;% ggplot(aes(x= mean_income, y = mean_abort)) + 
+  geom_point()
+```
+
+![](ggplot_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+
+6)
+
+```r
+wvs %&gt;% group_by(B_COUNTRY_ALPHA) %&gt;% summarise(mean_income = mean(Q106, na.rm=TRUE), mean_abort = mean(Q184, na.rm = TRUE)) %&gt;% 
+  ggplot(aes(x= mean_income, y = mean_abort)) + 
+  geom_point() + 
+  geom_text(aes(label= B_COUNTRY_ALPHA))
+```
+
+![](ggplot_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
