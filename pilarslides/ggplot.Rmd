@@ -225,13 +225,15 @@ ggplot(data=gapminder, aes(x=lifeExp)) +
 ---
 # ggplot: Plotting a continuous variable
 
-.med[How about one density plot per continent?]
+How about one density plot per continent?
 
 --
-```{r fig.height = 6, fig.width = 7}
+.pull-left[
+```{r fig.height = 4, fig.width = 5}
 ggplot(data=gapminder, aes(x=lifeExp, fill=continent)) +
     geom_density(alpha=0.3)
 ```
+]
 --
 
 .pull-right.med[**PRACTICE**: Change the alpha value and see what that does.]
@@ -241,10 +243,13 @@ ggplot(data=gapminder, aes(x=lifeExp, fill=continent)) +
 
 Boxplots are useful when we have a categorical X and a continuous Y (or viceversa)
 
+.pull-left[
 ```{r fig.height = 5, fig.width = 6}
  ggplot(data=gapminder, aes(x=continent, y=lifeExp)) +
   geom_boxplot()
 ```
+]
+
 --
 
 .pull-right.med[**PRACTICE**: Give it some color (hint: see the colorful bar graph above). 
@@ -314,7 +319,7 @@ gapminder %>%
 
 2) Add some color 
 
-3) Change the axis so that it's not in scientific notation
+3) Change the axis so that it's not in scientific notation (google:  options(scipen = ))
 
 4) Add a theme 
 ]
@@ -372,20 +377,24 @@ plot1 <- gapminder %>%
 ---
 # MORE PRACTICE `r emo::ji("geek")`
 
-Using the World Value Survey dataset from yesterday, let's explore people's liberal-conservative values across the world. 
+Using the World Value Survey: 
 
-1) Create a subset with the following variables: Q106-Q109, Q240, Q184-Q186. (Refer to codebook to see what these variables are.)
+1) Create a subset with the following variables: B_COUNTRY_ALPHA, A_YEAR, Q106-Q109, Q240, Q184-Q186. (Refer to codebook to see what these variables are.)
 
-2) Keep only observations from the following countries: US, Colombia, Kazahkstan, Japan, Zimbabwe
+2) Keep only observations from the following countries: US, Colombia, Tajikistan, Japan, Zimbabwe
 
-3) Rename the following variables: 
+3) Check the dimensions of this new dataset
+
+4) Rename the following variables: 
   - Q106 to "income_eq"
   - Q240 to "left_right" 
   - Q184 to "just_abort"
 
-4) Find the mean of "left_right" for the total sample. Then find the mean of "left_right" in each country. 
+5) Make a table of "left_right" for the whole sample, then for each country (hint: make a crosstab of B_COUNTRY_ALPHA and left_right). BONUS: convert this crosstab into percentage per column.
 
-5) Now compare this with the mean of "income_eq" and "just_abort". (You can explore the other variables in the dataset as well.) What does this tell us about liberal-conservative values? 
+6) Find the mean of "left_right" for the total sample. Then find the mean of "left_right" in each country. 
+
+7) Now calculate the mean of "income_eq" and "just_abort" for each country. What does this tell us about liberal-conservative values? 
 
 ---
 exclude: true
@@ -400,7 +409,7 @@ wvs <- read_dta("C:/Users/pilim/Dropbox/Northwestern/TA/Math Camp/Session 2/WVS_
 
 1) 
 ```{r}
-wvs_sml<- wvs %>% select(B_COUNTRY_ALPHA, Q106:Q109, Q240, Q184:Q186) 
+wvs_sml<- wvs %>% select(B_COUNTRY_ALPHA, A_YEAR, Q106:Q109, Q240, Q184:Q186) 
 ```
 
 2) 
@@ -410,18 +419,31 @@ wvs_sml <- wvs_sml %>% filter(B_COUNTRY_ALPHA == "COL" | B_COUNTRY_ALPHA == "TJK
 
 3) 
 ```{r}
+dim(wvs_sml)
+```
+
+4) 
+```{r}
 wvs_sml <- wvs_sml %>% rename(income_eq = Q106,
                               left_right = Q240, 
                               just_abort = Q184)
 ```
 
-4) 
+5) 
+```{r}
+table(wvs_sml$left_right)
+table(wvs_sml$left_right, wvs_sml$B_COUNTRY_ALPHA)
+```
+
+6) 
 ```{r}
 wvs_sml %>% summarise(mean_scale = mean(left_right, na.rm = TRUE))
+
 wvs_sml %>% group_by(B_COUNTRY_ALPHA) %>% summarise(mean_scale = mean(left_right, na.rm = TRUE))
 
 ```
-5) 
+
+7) 
 ```{r}
 wvs_sml %>% group_by(B_COUNTRY_ALPHA) %>% summarise(mean_scale = mean(left_right, na.rm=TRUE), mean_income = mean(income_eq, na.rm = TRUE), mean_abort = mean(just_abort, na.rm = TRUE))
 ```
@@ -433,11 +455,11 @@ wvs_sml %>% group_by(B_COUNTRY_ALPHA) %>% summarise(mean_scale = mean(left_right
 
 1) Plot a bar graph with the number of observations per country 
 
-2) Plot a histogram with the distribution of left_right for each country. (All in the same plot)
+2) Plot a histogram with the distribution of left_right for each country (all in the same plot)
 
-3) Make a violin plot of the distribution of "income_eq" for each country (same plot). 
+3) Make a violin plot of the distribution of "income_eq" for each country (all in same plot). 
 
-4) Make a box plot of the distribution of "just_abort" for each country (same plot).  
+4) Make a box plot of the distribution of "just_abort" for each country (all in same plot).  
 
 *With the complete dataset:*
 
